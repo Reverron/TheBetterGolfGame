@@ -11,7 +11,6 @@ public class PlayerController : MonoBehaviour
     public float respawnTime = 2f;
 
     // Local Attributes
-    bool initialShoot;
     bool canShoot;
     GameObject player;
     Vector3 originalPos;
@@ -32,12 +31,12 @@ public class PlayerController : MonoBehaviour
     }
 
     private void FixedUpdate() {
-        HandleDirection();
+        if (Input.GetMouseButton(1)) HandleDirection();
+        else if (canShoot) Focus();
 
         if (Input.GetMouseButtonDown(0) && canShoot) {
             Shoot(shootDirection, speed);
             StartCoroutine(ManageRespawn(respawnTime));
-            initialShoot = false;
             canShoot = false;
         }
 
@@ -50,24 +49,18 @@ public class PlayerController : MonoBehaviour
     }
 
     void HandleDirection() {
-        if (Input.GetMouseButton(1)) {
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
             shootDirection = ray.direction;
             shootDirection.y = 0;
             Quaternion targetRotation = Quaternion.LookRotation(shootDirection);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 5 * Time.deltaTime);
-        }
-
-        else {
-            if (canShoot) Focus();
-        }
 
     }
 
     void Shoot(Vector3 direction, float force) {
-
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
+        rb.constraints = RigidbodyConstraints.FreezeRotation;
 
         rb.AddForce(direction * force, ForceMode.Impulse);
     }
@@ -85,8 +78,20 @@ public class PlayerController : MonoBehaviour
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         canShoot = true;
-        Debug.Log("Player Respawned");
+
         yield return null;
+    }
+
+    private void OnCollisionEnter(Collision collision) {
+        if (collision.gameObject.CompareTag("Wall")) {
+            /*Plane plane = new Plane(collision.GetContact(0).normal, collision.GetContact(0).point);
+            Vector3 reflected = Vector3.Reflect(shootDirection, plane.normal);
+            Debug.Log(reflected);
+            
+            rb.velocity = Vector3.zero;
+            Shoot(reflected, speed);
+            */
+        }
     }
 
 }

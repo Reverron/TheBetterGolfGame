@@ -59,6 +59,7 @@
     <Compile Include="Assets\Scenes\LevelManager.cs" />
     <Compile Include="Assets\Scenes\EndPortalBehavior.cs" />
     <Compile Include="Assets\Scenes\PlayerController.cs" />
+    <Compile Include="Assets\WallBehaviour.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

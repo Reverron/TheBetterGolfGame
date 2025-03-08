@@ -354,6 +354,7 @@
 "Assets/Scenes/EndPortalBehavior.cs"
 "Assets/Scenes/LevelManager.cs"
 "Assets/Scenes/PlayerController.cs"
+"Assets/WallBehaviour.cs"
 -langversion:9.0
 
 /deterministic
